@@ -62,10 +62,10 @@ export default {
         ],
         price: [
           { required: true, message: '请输入价格', trigger: 'blur' }
-        ],
-        categoryId: [
-          { required: true, message: '请选择所属栏目', trigger: 'blur' }
         ]
+        // categoryId: [
+        //   { required: true, message: '请选择所属栏目', trigger: 'blur' }
+        // ]
       }
     }
   },
