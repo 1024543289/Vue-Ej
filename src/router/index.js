@@ -106,7 +106,7 @@ export const constantRoutes = [
  * 动态路由，不同身份看到的路由信息不一样
  */
 export const asyncRoutes = [
-  //顾客管理
+  // 顾客管理
   {
     path: '/customer',
     component: Layout,
@@ -120,7 +120,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  //栏目管理
+  // 栏目管理
   {
     path: '/category',
     component: Layout,
@@ -134,7 +134,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  //产品管理
+  // 产品管理
   {
     path: '/product',
     component: Layout,
@@ -148,7 +148,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  //订单管理
+  // 订单管理
   {
     path: '/order',
     component: Layout,
@@ -159,10 +159,36 @@ export const asyncRoutes = [
         component: () => import('@/pages/order/order'),
         name: 'order',
         meta: { title: '订单管理', icon: 'skill', noCache: true }
+      },
+      {
+        path: 'details',
+        hidden: true,
+        component: () => import('@/pages/order/Details'),
+        name: 'order',
+        meta: { title: '订单详情', icon: 'skill', noCache: true }
       }
     ]
   },
-  //评价管理
+  {
+    path: '/check',
+    component: Layout,
+    meta: { title: '审核管理', icon: 'tab' },
+    children: [
+      {
+        path: 'waiter',
+        component: () => import('@/pages/check/WaiterCheck'),
+        name: 'waiter',
+        meta: { title: '员工审核', icon: 'skill', noCache: true }
+      },
+      {
+        path: 'withdraw',
+        component: () => import('@/pages/check/WithdrawCheck'),
+        name: 'order',
+        meta: { title: '订单详情', icon: 'skill', noCache: true }
+      }
+    ]
+  },
+  // 评价管理
   {
     path: '/comments',
     component: Layout,
@@ -176,7 +202,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  //员工管理
+  // 员工管理
   {
     path: '/waiter',
     component: Layout,
@@ -190,7 +216,7 @@ export const asyncRoutes = [
       }
     ]
   },
- 
+
   /*
   {
     path: '/permission',
