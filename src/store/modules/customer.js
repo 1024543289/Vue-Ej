@@ -30,7 +30,6 @@ export default {
     },
     // 需要接受一个参数，这个参数就是customers
     refreshCustomers(state,customers){
-      console.log('state->',state);
       state.customers = customers;
     },
     setTitle(state,title){
@@ -39,22 +38,21 @@ export default {
   },
   actions:{
     async batchDeleteCustomers(context,ids){
-      let response = await post("http://134.175.100.63:6677/customer/batchDelete",{ids});
+      let response = await post_array("/customer/batchDelete",{ids});
       context.dispatch("findAllCustomers")
       return response;
     },
     // async findAllCustomers({commit,dispatch,getters,state}){
     async findAllCustomers(context){
-      console.log("context->",context);
       // 1. 查询所有顾客信息
-      let response = await get("http://134.175.100.63:6677/customer/findAll");
+      let response = await get("/customer/findAll");
       //alert(JSON.stringify(response));
       // 2. 将顾客信息设置到state.customers中
       context.commit("refreshCustomers",response.data)
     },
     async deleteCustomerById({dispatch},id){
       // 1. 删除顾客信息
-      let response = await get("http://134.175.100.63:6677/customer/deleteById?id="+id);
+      let response = await get("/customer/deleteById?id="+id);
       // 2. 刷新
       dispatch("findAllCustomers")
       // 3. 提示成功
@@ -62,7 +60,7 @@ export default {
     },
     async saveOrUpdateCustomer({dispatch,commit},customer){
       // 1. 提交请求
-      let response = await post("http://134.175.100.63:6677/customer/saveOrUpdate",customer)
+      let response = await post("/customer/saveOrUpdate",customer)
       // 2. 关闭模态
       commit("closeModal");
       // 3. 刷新页面
