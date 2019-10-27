@@ -113,13 +113,11 @@ export default {
     dialogCloseHandler() {
       this.$refs.productForm.resetFields()
     },
-    // 编辑
     editHandler(row) {
       this.product = row
       this.setTitle('修改产品信息')
       this.showModal()
     },
-    // 删除
     deleteHandler(id) {
       this.deleteProductById(id)
         .then((response) => {
