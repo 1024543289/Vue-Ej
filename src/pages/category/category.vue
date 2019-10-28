@@ -1,51 +1,121 @@
 <template>
-  <div id="category">
+  <div class="category">
+    <h2>栏目管理</h2>
     <!-- 按钮 -->
-    <div class="btns">
-			<el-button @click="" type="primary" size="small">添加</el-button>
-			<el-button type="danger" size="small" @click="">批量删除</el-button>
-		</div>
-    <!-- 表单开始 -->
-    
-    <!-- 表单结束 -->
-    <!-- 表格开始 -->
-    <el-table :data="categories" size="small" @selection-change="">
-      <el-table-column type="selection" width="55"></el-table-column>
-      <el-table-column prop="name" label="栏目名称"></el-table-column>
-      <el-table-column prop="num" label="数量"></el-table-column>
-      <el-table-column prop="icon" label="图标"></el-table-column>
-      <el-table-column prop="parentId" label="上级栏目"></el-table-column>
-      <el-table-column label="操作" width="100px" align="center">
-        <template #default="record">
-          <a href="" class="el-icon-delete" @click.prevent = ""></a> &nbsp;
-          <a href="" class="el-icon-edit-outline" @click.prevent = ""></a>
-          <a href=""  @click.prevent = "">详情</a>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 表格结束 -->
+    <div>
+      <el-button size="small" type="primary" @click="toAddHandler">添加</el-button>
+      <el-button size="small" type="danger" @click="batchDeleteHandler">批量删除</el-button>
+    </div>
+    <!-- 表格 -->
+    <div>
+      <el-table :data="categories" size="mini" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55" />
+        <el-table-column prop="id" label="编号" />
+        <el-table-column prop="name" label="栏目名称" />
+        <el-table-column prop="num" label="序号" />
+        <el-table-column prop="parentId" label="父栏目" />
+        <el-table-column label="操作" width="60" align="center">
+          <template #default="record">
+            <i class="el-icon-delete" href="" @click.prevent="deleteHandler(record.row.id)" /> &nbsp;
+            <i class="el-icon-edit-outline" href="" @click.prevent="editHandler(record.row)" />
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <!-- 模态框 -->
+    <el-dialog :title="title" :visible.sync="visible" @close="dialogCloseHandler">
+      <el-form ref="categoryForm" :model="category" :rules="rules">
+        <el-form-item label="栏目名称" label-width="100px" prop="name">
+          <el-input v-model="category.name" auto-complete="off" />
+        </el-form-item>
+        <el-form-item label="序号" label-width="100px" prop="num">
+          <el-input v-model="category.num" auto-complete="off" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="closeModal">取 消</el-button>
+        <el-button size="small" type="primary" @click="submitHandler">确 定</el-button>
+      </div>
+    </el-dialog>
+    <!-- /模态框 -->
   </div>
 </template>
 <script>
-import {mapState,mapGetters,mapMutations,mapActions} from 'vuex'
+import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 export default {
-  data(){
+  data() {
     return {
-
+      category: {},
+      ids: [],
+      rules: {
+        name: [
+          { required: true, message: '请输入栏目名称', trigger: 'blur' }
+        ],
+        num: [
+          { required: true, message: '请输入序号', trigger: 'blur' }
+        ]
+      }
     }
   },
-  created(){
-    this.findAllCategories();
-  },
   computed: {
-    ...mapState("category",["categories"])
+    ...mapState('category', ['categories', 'visible', 'title']),
+    ...mapGetters('category', ['orderCategory', 'categorySize'])
+  },
+  created() {
+    this.findAllCategories()
   },
   methods: {
-    //动作
-    ...mapActions("category",["findAllCategories"])
-    //突变
-    
+    ...mapMutations('category', ['showModal', 'closeModal', 'setTitle']),
+    ...mapActions('category', ['findAllCategories', 'saveOrUpdateCategory', 'deleteCategoryById', 'batchDeleteCategory']),
+    // 普通方法
+    handleSelectionChange(val) {
+      this.ids = val.map(item => item.id)
+    },
+    toAddHandler() {
+      // 1. 重置表单
+      this.category = {}
+      this.setTitle('添加栏目信息')
+      // 2. 显示模态框
+      this.showModal()
+    },
+    submitHandler() {
+      // 校验
+      this.$refs.categoryForm.validate((valid) => {
+        // 如果校验通过
+        if (valid) {
+          const promise = this.saveOrUpdateCategory(this.category)
+          promise.then((response) => {
+            // promise为action函数的返回值，异步函数的返回值就是promise的then回调函数的参数
+            this.$message({ type: 'success', message: response.statusText })
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    dialogCloseHandler() {
+      this.$refs.categoryForm.resetFields()
+    },
+    editHandler(row) {
+      this.category = row
+      this.setTitle('修改栏目信息')
+      this.showModal()
+    },
+    deleteHandler(id) {
+      this.deleteCategoryById(id)
+        .then((response) => {
+          this.$message({ type: 'success', message: response.statusText })
+        })
+    },
+    batchDeleteHandler() {
+      this.batchDeleteCategory(this.ids)
+        .then((response) => {
+          this.$message({ type: 'success', message: response.statusText })
+        })
+    }
+
   }
+
 }
 </script>
 <style scoped>
