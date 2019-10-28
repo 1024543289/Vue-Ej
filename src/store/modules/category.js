@@ -1,6 +1,7 @@
-import {get,post,post_array} from '../http/axios'
+import { get, post, post_array } from '../http/axios'
+
 export default {
-  namespaced:true,
+  namespaced: true,
   state: {
     visible:false,
     categories:[],
@@ -12,8 +13,13 @@ export default {
     }
   },
   mutations: {
-    //重载数据
-    refreshCategories(state,categories){
+    showModal(state) {
+      state.visible = true
+    },
+    closeModal(state) {
+      state.visible = false
+    },
+    refreshCategories(state, categories) {
       state.categories = categories
     },
     //分页改变函数

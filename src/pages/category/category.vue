@@ -1,5 +1,6 @@
 <template>
-  <div id="category">
+  <div class="category">
+    <h2>栏目管理</h2>
     <!-- 按钮 -->
     <div class="btns">
 			<el-button @click="toAddHandler" type="primary" size="small">添加</el-button>
@@ -56,7 +57,7 @@
 import {mapState,mapGetters,mapMutations,mapActions} from 'vuex'
 // import { Context } from 'tern';
 export default {
-  data(){
+  data() {
     return {
       form: {},
       ids:[],
@@ -71,9 +72,6 @@ export default {
         ]
       }
     }
-  },
-  created(){
-    this.findAllCategories();
   },
   computed: {
     ...mapState("category",["categories","visible","title","params"])
@@ -133,10 +131,8 @@ export default {
     idsChangeHandler(val){
       this.ids = val.map(item => item.id);
     }
-    
-    
-    
   }
+
 }
 </script>
 <style scoped>
